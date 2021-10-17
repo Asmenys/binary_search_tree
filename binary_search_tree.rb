@@ -61,7 +61,7 @@ class Tree
         elsif node.right.right.nil? && node.right.left.nil? == false
           node.right = node.right.left
         elsif node.right.right.nil? == false && node.right.left.nil? == false
-          successor = inorder_successor(node.left.right)
+          successor = inorder_successor(node.right.right)
           temp_right_node = node.right.right
           temp_left_node = node.right.left
           delete(successor)
@@ -92,20 +92,11 @@ class Tree
     end
   end
 
-  def inorder_successor(next_node, value = next_node.data)
-    if next_node.right.nil? && next_node.left.nil?
+  def inorder_successor(next_node)
+    if next_node.right.nil? && next_node.left.nil? || next_node.left.nil?
       next_node.data
     else
-      if next_node.right.nil?
-        next_node = next_node.left
-      elsif next_node.left.nil?
-        next_node = next_node.right
-      elsif next_node.right.data > value
-        next_node = next_node.left
-      elsif next_node.left.data > value
-        next_node = next_node.right
-      end
-      inorder_successor(next_node)
+      inorder_successor(next_node.left)
     end
   end
 

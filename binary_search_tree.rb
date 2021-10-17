@@ -52,38 +52,36 @@ class Tree
   end
 
   def delete(value, node = @root)
-
-    if node.right.nil? == false && node.right.data == value
-      if node.right.right.nil? && node.right.left.nil?
-        node.right = nil
-      elsif node.right.right.nil? && node.right.left.nil? == false
-        node.right = node.right.left
-      elsif node.right.right.nil? == false && node.right.left.nil?
-        node.right = node.right.right
-      end
-    elsif node.left.nil? == false && node.left.data == value
-      if node.left.left.nil? && node.left.right.nil?
-        node.left = nil
-      elsif node.left.left.nil? && node.right.left.nil? == false
-        node.left = node.right.left
-      elsif node.left.left.nil? == false && node.right.left.nil?
-        node.left = node.left.left
-
-      elsif node.left.left.nil? == false && node.right.left.nil? == false
-        if node.right.data == value || node.left.data == value
+    if node.right.nil? == false && node.right.data == value || node.left.nil? == false && node.left.data == value
+      if node.right.nil? == false && node.right.data == value
+        if node.right.right.nil? && node.right.left.nil?
+          node.right = nil
+        elsif node.right.right.nil? == false && node.right.left.nil?
+          node.right = node.right.right
+        elsif node.right.right.nil? && node.right.left.nil? == false
+          node.right = node.right.left
+        elsif node.right.right.nil? == false && node.right.left.nil? == false
+          successor = inorder_successor(node.left.right)
+          temp_right_node = node.right.right
+          temp_left_node = node.right.left
+          delete(successor)
+          node.right = Node.new(successor, temp_left_node, temp_right_node)
+        end
+      elsif node.left.nil? == false && node.left.data == value
+        if node.left.right.nil? && node.left.left.nil?
+          node.left = nil
+        elsif node.left.right.nil? == false && node.left.left.nil?
+          node.left = node.left.right
+        elsif node.left.right.nil? && node.left.left.nil? == false
+          node.left = node.left.left
+        elsif node.left.right.nil? == false && node.left.left.nil? == false
+          successor = inorder_successor(node.left.right)
+          delete(successor)
           temp_right_node = node.left.right
           temp_left_node = node.left.left
+          node.left = Node.new(successor, temp_left_node, temp_right_node)
+          end
         end
-
-        if node.right.data == value
-          next_node = node.right
-        elsif node.left.data == value
-          next_node = node.left
-        end
-        successor = inorder_successor(next_node.right)
-        self.delete(successor.data)
-        node.left = Node.new(successor.data, temp_left_node, temp_right_node)
-      end
     else
       next_node = if node.data > value
                     node.left
@@ -96,9 +94,13 @@ class Tree
 
   def inorder_successor(next_node, value = next_node.data)
     if next_node.right.nil? && next_node.left.nil?
-      next_node
+      next_node.data
     else
-      if next_node.right.data > value
+      if next_node.right.nil?
+        next_node = next_node.left
+      elsif next_node.left.nil?
+        next_node = next_node.right
+      elsif next_node.right.data > value
         next_node = next_node.left
       elsif next_node.left.data > value
         next_node = next_node.right
@@ -117,6 +119,5 @@ i = 0
 array = Array.new(17) { i += 1 }
 tree = Tree.new(array)
 binding.pry
-
-tree.delete(1)
+tree.delete(2)
 bin = 'bin'

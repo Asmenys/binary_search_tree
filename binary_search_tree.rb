@@ -52,11 +52,37 @@ class Tree
   end
 
   def delete(value, node = @root)
-    if node.right.data == value
-      node.right = nil if node.right.right.nil? && node.right.left.nil?
-    elsif node.left.data == value
-      if node.left.right.nil? && node.left.left.nil?
+
+    if node.right.nil? == false && node.right.data == value
+      if node.right.right.nil? && node.right.left.nil?
+        node.right = nil
+      elsif node.right.right.nil? && node.right.left.nil? == false
+        node.right = node.right.left
+      elsif node.right.right.nil? == false && node.right.left.nil?
+        node.right = node.right.right
+      end
+    elsif node.left.nil? == false && node.left.data == value
+      if node.left.left.nil? && node.left.right.nil?
         node.left = nil
+      elsif node.left.left.nil? && node.right.left.nil? == false
+        node.left = node.right.left
+      elsif node.left.left.nil? == false && node.right.left.nil?
+        node.left = node.left.left
+
+      elsif node.left.left.nil? == false && node.right.left.nil? == false
+        if node.right.data == value || node.left.data == value
+          temp_right_node = node.left.right
+          temp_left_node = node.left.left
+        end
+
+        if node.right.data == value
+          next_node = node.right
+        elsif node.left.data == value
+          next_node = node.left
+        end
+        successor = inorder_successor(next_node.right)
+        self.delete(successor.data)
+        node.left = Node.new(successor.data, temp_left_node, temp_right_node)
       end
     else
       next_node = if node.data > value
@@ -68,6 +94,19 @@ class Tree
     end
   end
 
+  def inorder_successor(next_node, value = next_node.data)
+    if next_node.right.nil? && next_node.left.nil?
+      next_node
+    else
+      if next_node.right.data > value
+        next_node = next_node.left
+      elsif next_node.left.data > value
+        next_node = next_node.right
+      end
+      inorder_successor(next_node)
+    end
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -75,7 +114,9 @@ class Tree
   end
 end
 i = 0
-array = Array.new(9) { i += 1 }
+array = Array.new(17) { i += 1 }
 tree = Tree.new(array)
 binding.pry
+
+tree.delete(1)
 bin = 'bin'

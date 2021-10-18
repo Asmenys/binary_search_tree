@@ -80,8 +80,8 @@ class Tree
           temp_right_node = node.left.right
           temp_left_node = node.left.left
           node.left = Node.new(successor, temp_left_node, temp_right_node)
-          end
         end
+      end
     else
       next_node = if node.data > value
                     node.left
@@ -102,6 +102,42 @@ class Tree
     end
   end
 
+  def find(value, node = @root)
+    if node.left.nil? == false && node.left.data == value
+      node.left
+    elsif node.right.nil? == false && node.right.data == value
+      node.right
+    else
+      next_node = if node.data > value
+                    node.left
+                  else
+                    node.right
+                  end
+      find(value, next_node)
+    end
+  end
+
+  def level_order(node = @root)
+    result_array = []
+    if node.right.nil? && node.left.nil?
+      [node.data]
+    else
+      if node.right.nil? == false
+        temp_result = level_order(node.right)
+        temp_result.each do |value|
+          result_array.unshift(value)
+        end
+      end
+      if node.left.nil? == false
+        temp_result = level_order(node.left)
+        temp_result.each do |value|
+          result_array.unshift value
+        end
+      end
+      result_array << node.data
+    end
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -109,9 +145,8 @@ class Tree
   end
 end
 i = 0
-array = Array.new(17) { i += 1 }
+array = [5,9,12,15,20,23,49,50,52]
 tree = Tree.new(array)
 binding.pry
-tree.delete(13)
-tree.delete(14)
+tree.level_order
 bin = 'bin'

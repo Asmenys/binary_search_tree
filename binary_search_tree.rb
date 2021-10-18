@@ -62,9 +62,9 @@ class Tree
           node.right = node.right.left
         elsif node.right.right.nil? == false && node.right.left.nil? == false
           successor = inorder_successor(node.right.right)
+          delete(successor)
           temp_right_node = node.right.right
           temp_left_node = node.right.left
-          delete(successor)
           node.right = Node.new(successor, temp_left_node, temp_right_node)
         end
       elsif node.left.nil? == false && node.left.data == value
@@ -93,7 +93,9 @@ class Tree
   end
 
   def inorder_successor(next_node)
-    if next_node.right.nil? && next_node.left.nil? || next_node.left.nil?
+    if next_node.right.nil? && next_node.left.nil?
+      next_node.data
+    elsif next_node.right.nil? == false && next_node.left.nil?
       next_node.data
     else
       inorder_successor(next_node.left)
@@ -110,5 +112,6 @@ i = 0
 array = Array.new(17) { i += 1 }
 tree = Tree.new(array)
 binding.pry
-tree.delete(2)
+tree.delete(13)
+tree.delete(14)
 bin = 'bin'

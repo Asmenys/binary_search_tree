@@ -42,7 +42,11 @@ class Tree
         node.right = Node.new(value)
       end
     else
-      next_node = if node.data > value
+      next_node = if node.right.nil? == false && node.left.nil?
+                    node.right
+                  elsif node.left.nil? == false && node.right.nil?
+                    node.left
+                  elsif node.right.data > value
                     node.left
                   else
                     node.right
@@ -62,10 +66,10 @@ class Tree
           node.right = node.right.left
         elsif node.right.right.nil? == false && node.right.left.nil? == false
           successor = inorder_successor(node.right.right)
-          delete(successor)
+          delete(successor.data)
           temp_right_node = node.right.right
           temp_left_node = node.right.left
-          node.right = Node.new(successor, temp_left_node, temp_right_node)
+          node.right = Node.new(successor.data, temp_left_node, temp_right_node)
         end
       elsif node.left.nil? == false && node.left.data == value
         if node.left.right.nil? && node.left.left.nil?
@@ -76,10 +80,10 @@ class Tree
           node.left = node.left.left
         elsif node.left.right.nil? == false && node.left.left.nil? == false
           successor = inorder_successor(node.left.right)
-          delete(successor)
+          delete(successor.data)
           temp_right_node = node.left.right
           temp_left_node = node.left.left
-          node.left = Node.new(successor, temp_left_node, temp_right_node)
+          node.left = Node.new(successor.data, temp_left_node, temp_right_node)
         end
       end
     else
@@ -94,9 +98,9 @@ class Tree
 
   def inorder_successor(next_node)
     if next_node.right.nil? && next_node.left.nil?
-      next_node.data
+      next_node
     elsif next_node.right.nil? == false && next_node.left.nil?
-      next_node.data
+      next_node
     else
       inorder_successor(next_node.left)
     end
@@ -120,21 +124,17 @@ class Tree
   def level_order(node = @root)
     result_array = []
     if node.right.nil? && node.left.nil?
-      [node.data]
+      node.data
     else
-      if node.right.nil? == false
-        temp_result = level_order(node.right)
-        temp_result.each do |value|
-          result_array.unshift(value)
-        end
+      temp_result_right = level_order(node.right) if node.right.nil? == false
+      temp_result_left = level_order(node.left) if node.left.nil? == false
+      if temp_result_right.nil? == false
+        result_array << temp_result_right
       end
-      if node.left.nil? == false
-        temp_result = level_order(node.left)
-        temp_result.each do |value|
-          result_array.unshift value
-        end
+      if temp_result_left.nil? == false
+        result_array << temp_result_left
       end
-      result_array << node.data
+      result_array.unshift node.data
     end
   end
 
@@ -145,8 +145,9 @@ class Tree
   end
 end
 i = 0
-array = [5,9,12,15,20,23,49,50,52]
+array = [9, 5, 12, 15, 20, 49, 23, 52, 50]
 tree = Tree.new(array)
 binding.pry
-tree.level_order
+test = 'test'
+tree.delete(49)
 bin = 'bin'

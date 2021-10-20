@@ -123,19 +123,15 @@ class Tree
 
   def level_order(node = @root)
     result_array = []
-    if node.right.nil? && node.left.nil?
-      node.data
-    else
-      temp_result_right = level_order(node.right) if node.right.nil? == false
-      temp_result_left = level_order(node.left) if node.left.nil? == false
-      if temp_result_right.nil? == false
-        result_array << temp_result_right
-      end
-      if temp_result_left.nil? == false
-        result_array << temp_result_left
-      end
-      result_array.unshift node.data
+    queue = []
+    queue << node
+    while queue.length.positive?
+      temp_node = queue.shift
+      result_array << temp_node.data
+      queue << temp_node.right if temp_node.right.nil? == false
+      queue << temp_node.left if temp_node.left.nil? == false
     end
+    result_array
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -149,5 +145,5 @@ array = [9, 5, 12, 15, 20, 49, 23, 52, 50]
 tree = Tree.new(array)
 binding.pry
 test = 'test'
-tree.delete(49)
+tree.level_order
 bin = 'bin'

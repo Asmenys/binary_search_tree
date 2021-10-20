@@ -139,11 +139,9 @@ class Tree
     if node.left.nil? && node.right.nil?
       result_array << node.data
     else
-      if node.right.nil? == false
-        result_array << preorder(node.right)
-        result_array << [node.data]
-        result_array << preorder(node.left) if node.left.nil? == false
-      end
+      result_array << inorder(node.left) if node.left.nil? == false
+      result_array << [node.data]
+      result_array << inorder(node.right) if node.right.nil? == false
       result_array.flatten
     end
   end
@@ -153,10 +151,8 @@ class Tree
     if node.left.nil? && node.right.nil?
       result_array
     else
-      if node.right.nil? == false
-        result_array << preorder(node.right)
-        result_array << preorder(node.left) if node.left.nil? == false
-      end
+      result_array << preorder(node.left) if node.left.nil? == false
+      result_array << preorder(node.right) if node.right.nil? == false
       result_array.flatten
     end
   end
@@ -166,13 +162,50 @@ class Tree
     if node.left.nil? && node.right.nil?
       result_array << node.data
     else
-      if node.left.nil? == false
-        result_array << preorder(node.left)
-        result_array << preorder(node.right) if node.right.nil? == false
-        result_array << [node.data]
-      end
+      result_array << postorder(node.right) if node.right.nil? == false
+      result_array << postorder(node.left) if node.left.nil? == false
+      result_array << [node.data]
       result_array.flatten
     end
+  end
+
+  def height(node = @root, length = 1)
+    if node.right.nil? && node.left.nil?
+      1
+    else
+      length += if node.right.nil? == false
+                  height(node.right)
+                else
+                  height(node.left)
+                end
+    end
+  end
+
+  def depth(value, node = @root, length = 1)
+    if node.data == value
+      length
+    else
+      length += if node.right.nil? == false && value > node.data
+                  depth(value, node.right)
+                else
+                  depth(value, node.left)
+                end
+    end
+    length
+  end
+
+  def balanced(root = @root)
+    length_left = height(root.left)
+    length_right = height(root.right)
+    if length_right - length_left > 1 || length_left - length_right > 1
+      'unbalanced'
+    else
+      'balanced'
+    end
+  end
+
+  def rebalance
+    @root = Tree.new(level_order.sort).root
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -185,5 +218,5 @@ i = 0
 array = [9, 5, 12, 15, 20, 49, 23, 52, 50]
 tree = Tree.new(array)
 binding.pry
-tree.preorder
+tree.rebalance
 bin = 'bin'

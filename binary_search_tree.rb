@@ -134,6 +134,47 @@ class Tree
     result_array
   end
 
+  def inorder(node = @root)
+    result_array = []
+    if node.left.nil? && node.right.nil?
+      result_array << node.data
+    else
+      if node.right.nil? == false
+        result_array << preorder(node.right)
+        result_array << [node.data]
+        result_array << preorder(node.left) if node.left.nil? == false
+      end
+      result_array.flatten
+    end
+  end
+
+  def preorder(node = @root)
+    result_array = [node.data]
+    if node.left.nil? && node.right.nil?
+      result_array
+    else
+      if node.right.nil? == false
+        result_array << preorder(node.right)
+        result_array << preorder(node.left) if node.left.nil? == false
+      end
+      result_array.flatten
+    end
+  end
+
+  def postorder(node = @root)
+    result_array = []
+    if node.left.nil? && node.right.nil?
+      result_array << node.data
+    else
+      if node.left.nil? == false
+        result_array << preorder(node.left)
+        result_array << preorder(node.right) if node.right.nil? == false
+        result_array << [node.data]
+      end
+      result_array.flatten
+    end
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -144,6 +185,5 @@ i = 0
 array = [9, 5, 12, 15, 20, 49, 23, 52, 50]
 tree = Tree.new(array)
 binding.pry
-test = 'test'
-tree.level_order
+tree.preorder
 bin = 'bin'

@@ -214,9 +214,4 @@ class Tree
     pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 end
-i = 0
-array = [9, 5, 12, 15, 20, 49, 23, 52, 50]
-tree = Tree.new(array)
-binding.pry
-tree.rebalance
-bin = 'bin'
+
